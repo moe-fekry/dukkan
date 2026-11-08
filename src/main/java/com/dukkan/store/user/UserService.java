@@ -2,8 +2,6 @@ package com.dukkan.store.user;
 
 import com.dukkan.store.system.exception.ObjectNotFoundException;
 import com.dukkan.store.system.exception.UserEmailExistsException;
-import com.dukkan.store.user.converter.UserToUserDtoConverter;
-import com.dukkan.store.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +11,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository repository;
-    private final UserToUserDtoConverter userToUserDtoConverter;
 
 
     public List<User> getAllUsers() {

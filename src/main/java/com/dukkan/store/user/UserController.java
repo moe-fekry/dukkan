@@ -1,12 +1,11 @@
 package com.dukkan.store.user;
 
 import com.dukkan.store.system.ApiResponse;
+import com.dukkan.store.system.ResponseMessage;
 import com.dukkan.store.system.StatusCode;
-import com.dukkan.store.user.converter.UserDtoToUserConverter;
-import com.dukkan.store.user.converter.UserRequestToUserConverter;
-import com.dukkan.store.user.converter.UserToUserDtoConverter;
 import com.dukkan.store.user.dto.UserDto;
 import com.dukkan.store.user.dto.UserRequest;
+import com.dukkan.store.user.mapper.UserMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final UserToUserDtoConverter userToUserDtoConverter;
-    private final UserRequestToUserConverter userRequestToUserConverter;
-    private final UserDtoToUserConverter userDtoToUserConverter;
+    private final UserMapper userMapper;
 
 
     @GetMapping
@@ -28,28 +25,28 @@ public class UserController {
         List<User> users = userService.getAllUsers();
 
         List<UserDto> userDtos = users.stream()
-                .map(userToUserDtoConverter::convert)
+                .map(userMapper::toDto)
                 .toList();
 
         return new ApiResponse(
                 true,
                 StatusCode.SUCCESS,
-                "Find All Success",
+                ResponseMessage.Find_All_Success,
                 userDtos
         );
     }
     @PostMapping
     public ApiResponse saveUser(@RequestBody @Valid UserRequest userRequest){
-        User user = userRequestToUserConverter.convert(userRequest);
+        User user = userMapper.toEntity(userRequest);
 
         User savedUser = userService.save(user);
 
-        UserDto userDto = userToUserDtoConverter.convert(savedUser);
+        UserDto userDto = userMapper.toDto(savedUser);
 
         return new ApiResponse(
                 true,
                 StatusCode.SUCCESS,
-                "User Saved",
+                ResponseMessage.User_Saved,
                 userDto
         );
     }
@@ -57,12 +54,12 @@ public class UserController {
     public ApiResponse findUserByEmail(@RequestParam(required = true) String email){
         User user = userService.findByEmail(email);
 
-        UserDto userDto = userToUserDtoConverter.convert(user);
+        UserDto userDto = userMapper.toDto(user);
 
         return new ApiResponse(
                 true,
                 StatusCode.SUCCESS,
-                "User Found",
+                ResponseMessage.User_Found,
                 userDto
         );
     }
@@ -70,26 +67,26 @@ public class UserController {
     public ApiResponse findUserById(@PathVariable Integer id){
         User user = userService.findById(id);
 
-        UserDto userDto = userToUserDtoConverter.convert(user);
+        UserDto userDto = userMapper.toDto(user);
 
         return new ApiResponse(
                 true,
                 StatusCode.SUCCESS,
-                "User Found",
+                ResponseMessage.User_Found,
                 userDto
         );
     }
 
     @PutMapping("/user/{id}")
     public ApiResponse updateUserById(@PathVariable Integer id, @RequestBody @Valid UserDto userUpdate){
-        User user = userDtoToUserConverter.convert(userUpdate);
+        User user = userMapper.toEntity(userUpdate);
         User updatedUser = userService.update(id, user);
-        UserDto userDto = userToUserDtoConverter.convert(updatedUser);
+        UserDto userDto = userMapper.toDto(updatedUser);
 
         return new ApiResponse(
                 true,
                 StatusCode.SUCCESS,
-                "User Updated",
+                ResponseMessage.User_Updated,
                 userDto
         );
     }
@@ -99,18 +96,18 @@ public class UserController {
         return new ApiResponse(
                 true,
                 StatusCode.SUCCESS,
-                "Delete Success"
+                ResponseMessage.Delete_Success
         );
     }
 
     @PutMapping("/activate/{userId}")
     public ApiResponse updateActivationStatus(@PathVariable Integer userId,@RequestParam(required = true) boolean isActivate){
         User user = userService.updateActivation(userId, isActivate);
-        UserDto userDto = userToUserDtoConverter.convert(user);
+        UserDto userDto = userMapper.toDto(user);
         return new ApiResponse(
                 true,
                 StatusCode.SUCCESS,
-                "User Activation Status Changed Sucessfully",
+                ResponseMessage.User_Activation_Status_Changed_Successfully,
                 userDto
         );
     }

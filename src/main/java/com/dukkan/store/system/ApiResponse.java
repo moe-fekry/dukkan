@@ -12,9 +12,9 @@ import lombok.Setter;
 public class ApiResponse {
     private boolean flag;
     private Integer code;
-    private String message;
+    private ResponseMessage message;
     private Object data;
-    public ApiResponse(boolean flag, Integer code, String message) {
+    public ApiResponse(boolean flag, Integer code, ResponseMessage message) {
         this.flag = flag;
         this.code = code;
         this.message = message;

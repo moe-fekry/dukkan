@@ -1,6 +1,7 @@
 package com.dukkan.store.system.exception;
 
 import com.dukkan.store.system.ApiResponse;
+import com.dukkan.store.system.ResponseMessage;
 import com.dukkan.store.system.StatusCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -31,7 +32,7 @@ public class ExceptionHandlerAdvice {
         return new ApiResponse(
                 false,
                 StatusCode.INVALID_ARGUMENT,
-                "Provided arguments are invalid, see data for details.",
+                ResponseMessage.Invalid_Arguments,
                 map
         );
     }
@@ -42,7 +43,7 @@ public class ExceptionHandlerAdvice {
         return new ApiResponse(
                 false,
                 StatusCode.UNAUTHORIZED,
-                "email already exists",
+                ResponseMessage.Email_Already_Exists,
                 ex.getMessage()
         );
     }
@@ -52,6 +53,7 @@ public class ExceptionHandlerAdvice {
         return new ApiResponse(
                 false,
                 StatusCode.NOT_FOUND,
+                ResponseMessage.Not_Found,
                 ex.getMessage()
         );
     }
@@ -71,7 +73,7 @@ public class ExceptionHandlerAdvice {
         return new ApiResponse(
                 false,
                 StatusCode.INVALID_ARGUMENT,
-                "Missing required parameter",
+                ResponseMessage.Missing_Required_Parameter,
                 errors
         );
     }
